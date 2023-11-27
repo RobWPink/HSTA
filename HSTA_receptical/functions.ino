@@ -13,10 +13,10 @@ void daughterPrint(unsigned long inter){
   if (!daughterTimer) { daughterTimer = millis(); }
   if (millis() - daughterTimer > inter && daughterTimer) {
     daughterTimer = millis();
-    bigMatrix[0].writeInt(currentPressure);  // Write local pressure values to 7-seg screen
-    smallMatrix[0].squareDisplay(0);
+    bigMatrix[0].writeInt(currentPressure*145.03773773);  // Write local pressure values to 7-seg screen
+    smallMatrix[0].squareDisplay(digitalRead(VENT)?100:0);
     bigMatrix[1].writeInt(currentTemperature);
-    smallMatrix[1].squareDisplay(0);
+    smallMatrix[1].squareDisplay(digitalRead(SWITCH)?100:0);
     smallMatrix[2].squareDisplay(0);
   }
 }

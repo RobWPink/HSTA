@@ -33,7 +33,7 @@ void loop() {
     pt.addValue(fmap(analogRead(PT),0,1023,0,70));
     double temp = mcp.readThermocouple();
     if (-40 <= temp < 500) {
-      tt.addValue(temp+273.15);  //Read TT value (K)
+      tt.addValue(temp);  //Read TT value (K)
     }
     timer[0] = millis();
   }
@@ -51,12 +51,12 @@ void loop() {
     for(int i = 0; i < 5; i++){packet[i] = XBOF_sym;}
     packet[5] = BOF_sym;
 
-    strcpy(data,"|ID=SAE␣J2799|VN=01.10|TV=3000.0|RT=H50|FC=");
-    strcat(data,digitalRead(SWITCH)?"Stat":"Halt");
+    strcpy(data,"|ID=SAE J2799|VN=01.10|TV=3000.0|RT=H50|FC=");
+    strcat(data,digitalRead(SWITCH)?"Dyna":"Halt");
     strcat(data,"|MP=");
     strcat(data,formatFloat(currentPressure,5,1));
     strcat(data,"|MT=");
-    strcat(data,formatFloat(currentTemperature,5,1));
+    strcat(data,formatFloat(currentTemperature+273.15,5,1)); //in Kelvin
     strcat(data,"|OD=|");
     uint8_t crc = getCrc(data);
     strcat(data,crc);
