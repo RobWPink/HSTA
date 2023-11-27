@@ -44,13 +44,12 @@ void loop() {
   if(!timer[1]){timer[1] = millis();}
   if(millis() - timer[1] > 100 && timer[1]){ // IR msg Freq
     timer[1] = millis();
-    char data[100]={'\0'};
-    char data_[300] = {'\0'};
-    char packet[500] = {'\0'};
-
-    for(int i = 0; i < 5; i++){packet[i] = XBOF_sym;}
-    packet[5] = BOF_sym;
-
+    char header[6] = {XBOF_sym,XBOF_sym,XBOF_sym,XBOF_sym,XBOF_sym,BOF_sym};
+    char footer[6] = {EOF_sym,XBOF_sym,XBOF_sym,XBOF_sym,XBOF_sym,XBOF_sym};
+    char data[100] = {""};
+    char data_[150] = {""};
+    char packet[200] = {""};
+    strcpy(packet,header);
     strcpy(data,"|ID=SAE J2799|VN=01.10|TV=3000.0|RT=H50|FC=");
     strcat(data,digitalRead(SWITCH)?"Dyna":"Halt");
     strcat(data,"|MP=");
@@ -60,7 +59,7 @@ void loop() {
     strcat(data,"|OD=|");
     uint8_t crc = getCrc(data);
     strcat(data,crc);
-    //Serial.println(data);
+    
     int j = 0;
     for(int i = 0; i < strlen(data); i++){
       if(data[i] == XBOF_sym ||
@@ -76,9 +75,15 @@ void loop() {
       }
     }
     strcat(packet,data_);
-    strcat(packet,EOF_sym);
-    for(int i = 0; i < 5; i++){strcat(packet,XBOF_sym);}
-    Serial1.write(packet,strlen(packet));
+    strcat(packet,footer);
+    /*
+    for(int i = 0; i < strlen(packet) -1;i++){
+      Serial.print(packet[i],HEX);
+    }
+    Serial.println();
+    */
+    Serial.println(packet);
+    Serial1.write(packet,strlen(packet)-1);
   }
   
   digitalWrite(VALVE,digitalRead(VENT)?HIGH:LOW);
