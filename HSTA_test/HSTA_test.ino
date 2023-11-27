@@ -8,7 +8,7 @@ void setup() {
   Serial.begin(9600);
   Serial1.begin(38400);
   matrixSetup("HSTA Test Rig", "V0.1.1");
-
+  crcSetup();
 }
 
 
@@ -34,15 +34,23 @@ void loop() {
     strcat(data,"|MT=");
     strcat(data,formatFloat(currentTemperature,5,1));
     strcat(data,"|OD=|");
-    unsigned long crc = _tmain(data);
-    
+    uint8_t crc = getCrc(data);
     strcat(data,crc);
     Serial.println(data);
-    
+
     int j = 0;
     for(int i = 0; i < strlen(data); i++){
-      data_[j++] = CE_sym;
-      data_[j++] = (data[i] ^ 0x20);
+      if(data[i] == XBOF_sym ||
+      data[i] == BOF_sym ||
+      data[i] == EOF_sym ||
+      data[i] == CE_sym){
+      
+        data_[j++] = CE_sym;
+        data_[j++] = (data[i] ^ 0x20);
+      }
+      else{
+        data_[j++] = data[i];
+      }
     }
     strcat(packet,data_);
     strcat(packet,EOF_sym);

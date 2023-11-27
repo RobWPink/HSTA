@@ -44,26 +44,3 @@ double currentTemperature = 0;
 unsigned long daughterTimer = 0;
 bool tog = false;
 unsigned long timer[3] = {0};
-
-//CRC constants:
-
-// CRC parameters (default values are for CCITT 16 Bit):
-const int order=16;
-const unsigned long polynom=0x1021;
-const int direct=1;
-const unsigned long crcinit=0x0000;
-const unsigned long crcxor=0x00;
-const int refin=1;
-const int refout=1;
-
-// internal global values:
-unsigned long crcmask;
-unsigned long crchighbit;
-unsigned long crcinit_direct;
-unsigned long crcinit_nondirect;
-unsigned long crctab[256];
-
-// crc
-int i,ii;
-unsigned long bit, crc;
-unsigned char recchar,*msgdata_ptr;

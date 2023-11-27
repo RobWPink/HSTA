@@ -3,45 +3,6 @@ float fmap(float x, float a, float b, float c, float d){
   return f;
 }
 
-unsigned long reflect (unsigned long crc, int bitnum) {
-  // reflects the lower 'bitnum' bits of 'crc'
-  unsigned long i, j=1, crcout=0;
-  for (i=(unsigned long)1<<(bitnum-1); i; i>>=1) {
-    if (crc & i) crcout|=j;
-    j<<= 1;
-  }
-  return (crcout);
-}
-
-unsigned long crcbitbybitfast(unsigned char* p, unsigned long len) {
-  // fast bit by bit algorithm without augmented zero bytes.
-  // does not use lookup table, suited for polynom orders between 1...32.
-  unsigned long i, j, c, bit;
-  unsigned long crc=crcinit_direct;
-  for (i=0; i<len; i++) {
-    c=(unsigned long)*p++;
-    if (refin) c=reflect(c, 8);
-    for (j=0x80; j; j>>=1) {
-      bit=crc & crchighbit;
-      crc<<= 1;
-      if (c & j) bit^= crchighbit;
-      if (bit) crc^= polynom;
-    }
-  }
-  if (refout) crc=reflect(crc, order);
-  crc^= crcxor;
-  crc&= crcmask;
-  return(crc);
-}
-
-int msglen(unsigned char * str)
-{
-int i=0;
-while(*(str++))
-i++;
-return i;
-}
-
 void sendMessage(char* msg){
   Wire.beginTransmission(0x03);
   Wire.write(msg); 
