@@ -9,8 +9,8 @@ void setup() {
   pinModeSetup();
   Serial.begin(9600);
   Serial1.begin(38400);
-  matrixSetup("HSTA Test Rig", "V0.1.1");
-
+  matrixSetup("HSTA Test Rig", "V0.1.1 | MPa / K");
+  delay(500);
   while (!mcp.begin(mcpAddr)) {
     Serial.println("MCP9600 not found.");
     delay(1000);
@@ -18,6 +18,8 @@ void setup() {
   mcp.setADCresolution(MCP9600_ADCRESOLUTION_18);
   mcp.setThermocoupleType(MCP9600_TYPE_J);
   mcp.enable(true);
+  rtc.init();
+  Serial.println("OK");
 }
 
 
@@ -25,7 +27,7 @@ void loop() {
   struct tm myTime;
   rtc.getTime(&myTime); // Read the current time from the RTC into our time structure
 
-
+  daughterPrint(500);
   if (!timer[0]) { timer[0] = millis(); }
   if (millis() - timer[0] > 100) {
     pt.addValue(fmap(analogRead(PT),0,1023,0,70));
@@ -58,7 +60,7 @@ void loop() {
     strcat(data,"|OD=|");
     uint8_t crc = getCrc(data);
     strcat(data,crc);
-    Serial.println(data);
+    //Serial.println(data);
     int j = 0;
     for(int i = 0; i < strlen(data); i++){
       if(data[i] == XBOF_sym ||
@@ -78,26 +80,25 @@ void loop() {
     for(int i = 0; i < 5; i++){strcat(packet,XBOF_sym);}
     Serial1.write(packet,strlen(packet));
   }
-
+  
+  digitalWrite(VALVE,digitalRead(VENT)?HIGH:LOW);
 
   char logString[32] = {'\0'};
   if(digitalRead(SWITCH)){
     tog = true;
-    digitalWrite(VALVE,HIGH);
-    if(!timer[1]){timer[1] = millis();}
-    if(millis() - timer[1] >= 200 && timer[1]){
+    if(!timer[2]){timer[2] = millis();}
+    if(millis() - timer[2] >= 200 && timer[2]){
       char ptStr[10] = {'\0'}; dtostrf(currentPressure,1,0,ptStr);
       char ttStr[10] = {'\0'}; dtostrf(currentTemperature,1,0,ttStr);
 
       sprintf(logString,"%02d:%02d:%02d,%s,%s\n",myTime.tm_hour, myTime.tm_min, myTime.tm_sec,ptStr,ttStr);
       sendMessage(logString);
-      memset(logString,'\0',32);
       Serial.println(logString);
-      timer[1] = millis();
+      memset(logString,'\0',32);
+      timer[2] = millis();
     }
   }
   else{
-    digitalWrite(VALVE,LOW);
     if(tog){tog = false;sprintf(logString,"\n");}
   }
 }

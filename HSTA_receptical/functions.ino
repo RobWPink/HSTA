@@ -47,6 +47,9 @@ char *formatFloat(float number, int len, int prec) {
 
 void pinModeSetup() {
   pinMode(SWITCH, INPUT);
+  pinMode(VENT, INPUT);
+  pinMode(VALVE, OUTPUT);
+  digitalWrite(VALVE, LOW);
 
   pinMode(7, OUTPUT);
   digitalWrite(7, HIGH);

@@ -13,8 +13,8 @@
 unsigned long long max_filesize = 10*pow(10,6);
 unsigned long timer[10] = {0};
 
-String logFile = "/HSTS.log";
-String headerString = "time,bank1,bank2,bank3,manifold,tt1A,tt1B,tt2A,tt2B,tt3A,tt3B\n";
+String logFile = "/HSTA.log";
+String headerString = "time,pressure,temperature\n";
 String date;
 String psi;
 String temp1;

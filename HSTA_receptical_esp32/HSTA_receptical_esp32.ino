@@ -30,6 +30,7 @@ void setup() {
     if(check != headerString){Serial.println("log file is STILL improperly formatted!!");while(1);}
   }
   Wire.onReceive(receiveEvent);
+  Serial.println("OK");
 }
 
 void loop() {

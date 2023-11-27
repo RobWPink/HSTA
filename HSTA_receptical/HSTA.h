@@ -8,7 +8,7 @@
 #include "Adafruit_LEDBackpack.h"
 #include "Adafruit_LiquidCrystal.h"
 #include <bb_rtc.h>
-
+#define TCAADDR 0x70
 BBRTC rtc;
 SmallMatrix smallMatrix[3] = {SmallMatrix(0x70), SmallMatrix(0x71), SmallMatrix(0x72) };
 LargeMatrix bigMatrix[3] = {LargeMatrix(0x73), LargeMatrix(0x74), LargeMatrix(0x75) };
@@ -30,11 +30,23 @@ Adafruit_MCP9600 mcp;
 #define RST 7    //W5500 RST
 #define CS 4     //SD CS pin
 
-#define PT -1
-#define TT -1
+#define PT A11
 
-#define SWITCH -1
-#define VALVE -1
+#define SWITCH 47
+#define VENT 45
+#define VALVE 43
+
+/*
+#define RLY0 47
+#define RLY1 45
+#define RLY2 43
+#define RLY3 41
+#define RLY4 49
+#define RLY5 48
+#define RLY6
+#define RLY7
+#define RLY8
+*/
 
 uint16_t mcpAddr = 0x67;
 char buffer[32] = {"\0"};
