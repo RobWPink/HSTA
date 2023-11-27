@@ -1,9 +1,6 @@
 #include <RunningAverage.h>
 #include <LedHelper.h>
 #include <Adafruit_GFX.h>
-#include <Adafruit_I2CDevice.h>
-#include <Adafruit_I2CRegister.h>
-#include "Adafruit_MCP9600.h"
 #include <Wire.h> //For I2C comms
 #include "Adafruit_LEDBackpack.h"
 #include "Adafruit_LiquidCrystal.h"
@@ -13,7 +10,6 @@ BBRTC rtc;
 SmallMatrix smallMatrix[3] = {SmallMatrix(0x70), SmallMatrix(0x71), SmallMatrix(0x72) };
 LargeMatrix bigMatrix[3] = {LargeMatrix(0x73), LargeMatrix(0x74), LargeMatrix(0x75) };
 Adafruit_LiquidCrystal lcd(0);
-Adafruit_MCP9600 mcp;
 
 // SAE J2799 msg control codes
 #define XBOF_sym 0xFF // Extra Begin of Frame
@@ -48,7 +44,6 @@ Adafruit_MCP9600 mcp;
 #define RLY8
 */
 
-uint16_t mcpAddr = 0x67;
 char buffer[32] = {"\0"};
 volatile int  MOVING_AVG_SIZE = 10;
 double currentPressure = 0;

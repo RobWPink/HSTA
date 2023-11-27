@@ -9,15 +9,8 @@ void setup() {
   pinModeSetup();
   Serial.begin(9600);
   Serial1.begin(38400);
-  matrixSetup("HSTA Test Rig", "V0.1.1 | MPa / K");
+  matrixSetup("HSTA Test Rig", "V0.1.3");
   delay(500);
-  while (!mcp.begin(mcpAddr)) {
-    Serial.println("MCP9600 not found.");
-    delay(1000);
-  }
-  mcp.setADCresolution(MCP9600_ADCRESOLUTION_18);
-  mcp.setThermocoupleType(MCP9600_TYPE_J);
-  mcp.enable(true);
   rtc.init();
   Serial.println("OK");
 }
@@ -31,10 +24,7 @@ void loop() {
   if (!timer[0]) { timer[0] = millis(); }
   if (millis() - timer[0] > 100) {
     pt.addValue(fmap(analogRead(PT),0,1023,0,70));
-    double temp = mcp.readThermocouple();
-    if (-40 <= temp < 500) {
-      tt.addValue(temp);  //Read TT value (K)
-    }
+    tt.addValue(JcurveThermistor(analogRead(A0)));  //Read TT value (K)
     timer[0] = millis();
   }
 

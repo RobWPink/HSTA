@@ -3,6 +3,19 @@ float fmap(float x, float a, float b, float c, float d){
   return f;
 }
 
+double JcurveThermistor(int Vo){
+  float A = 1.125506488e-03;
+  float B = 2.346974828e-04;
+  float C = 0.8564408032e-07;
+  float R1 = 20880;
+  float logR2, R2, T;
+  R2 = R1* (1023.0 / (float)Vo - 1.0);
+  logR2 = log(R2);
+  T = (1.0 / (A + B*logR2 + C*logR2*logR2*logR2));  // Steinhart and Hart Equation. T  = 1 / {A + B[ln(R)] + C[ln(R)]^3}
+  T =  T - 273.15;
+  return T;
+}
+
 void sendMessage(char* msg){
   Wire.beginTransmission(0x03);
   Wire.write(msg); 
