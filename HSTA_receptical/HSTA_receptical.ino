@@ -23,7 +23,10 @@ void loop() {
   daughterPrint(500);
   if (!timer[0]) { timer[0] = millis(); }
   if (millis() - timer[0] > 100) {
-    pt.addValue(map(analogRead(PT),100,1023,0,13000));
+    //Serial.println(analogRead(PT));
+  float temp = 15.385*analogRead(PT)-1596.9;
+  if(temp < 0){temp = 0;}
+    pt.addValue(temp);
     tt.addValue(JcurveThermistor(analogRead(TT)));  //Read TT value (K)
     timer[0] = millis();
   }
@@ -72,7 +75,7 @@ void loop() {
     }
     Serial.println();
     */
-    Serial.println(packet);
+    //Serial.println(packet);
     Serial1.write(packet,strlen(packet)-1);
   }
   
