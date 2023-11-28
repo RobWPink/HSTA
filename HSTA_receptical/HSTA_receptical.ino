@@ -37,16 +37,17 @@ void loop() {
   if(!timer[1]){timer[1] = millis();}
   if(millis() - timer[1] > 100 && timer[1]){ // IR msg Freq
     timer[1] = millis();
-    char header[6] = {XBOF_sym,XBOF_sym,XBOF_sym,XBOF_sym,XBOF_sym,BOF_sym};
-    char footer[6] = {EOF_sym,XBOF_sym,XBOF_sym,XBOF_sym,XBOF_sym,XBOF_sym};
-    char data[100] = {""};
-    char data_[150] = {""};
-    char packet[200] = {""};
-    strcpy(packet,header);
+    uint8_t data[100] = {""};
+    uint8_t data_[150] = {""};
+    uint8_t packet[200] = {""};
+    for(int i = 0; i < 5;i++){
+      packet[strlen(packet)] = 0xFF;
+    }
+    packet[strlen(packet)] = 0xC0;
     strcpy(data,"|ID=SAE J2799|VN=01.10|TV=3000.0|RT=H50|FC=");
-    strcat(data,digitalRead(SWITCH)?"Dyna":"Halt");
+    strcat(data,0?"Dyna":"Halt");
     strcat(data,"|MP=");
-    strcat(data,formatFloat(currentPressure/145.0377,5,1));
+    strcat(data,formatFloat(currentPressure,5,1));
     strcat(data,"|MT=");
     strcat(data,formatFloat(currentTemperature+273.15,5,1)); //in Kelvin
     strcat(data,"|OD=|");
@@ -68,15 +69,25 @@ void loop() {
       }
     }
     strcat(packet,data_);
-    strcat(packet,footer);
+    packet[strlen(packet)] = 0xC1;
+
+    for(int i = 0; i < 5;i++){
+      packet[strlen(packet)] = 0xFF;
+    }
     /*
-    for(int i = 0; i < strlen(packet) -1;i++){
+    for(int i = 0; i < strlen(packet);i++){
       Serial.print(packet[i],HEX);
+      Serial.print(" ");
     }
     Serial.println();
+    Serial.println();
     */
-    //Serial.println(packet);
-    Serial1.write(packet,strlen(packet)-1);
+    for(int i = 0; i < strlen(packet);i++){
+      Serial.print((char)packet[i]);
+    }
+    Serial.println();
+    Serial1.write(packet,strlen(packet));
+  }
   }
   
   digitalWrite(VALVE,digitalRead(VENT)?HIGH:LOW);
