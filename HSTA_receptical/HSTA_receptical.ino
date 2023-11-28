@@ -9,7 +9,7 @@ void setup() {
   pinModeSetup();
   Serial.begin(9600);
   Serial1.begin(38400);
-  matrixSetup("HSTA Test Rig", "V0.1.3");
+  matrixSetup("HSTA Test Rig", "V0.1.4");
   delay(500);
   rtc.init();
   Serial.println("OK");
@@ -23,8 +23,8 @@ void loop() {
   daughterPrint(500);
   if (!timer[0]) { timer[0] = millis(); }
   if (millis() - timer[0] > 100) {
-    pt.addValue(fmap(analogRead(PT),0,1023,0,70));
-    tt.addValue(JcurveThermistor(analogRead(A0)));  //Read TT value (K)
+    pt.addValue(map(analogRead(PT),100,1023,0,13000));
+    tt.addValue(JcurveThermistor(analogRead(TT)));  //Read TT value (K)
     timer[0] = millis();
   }
 
@@ -43,7 +43,7 @@ void loop() {
     strcpy(data,"|ID=SAE J2799|VN=01.10|TV=3000.0|RT=H50|FC=");
     strcat(data,digitalRead(SWITCH)?"Dyna":"Halt");
     strcat(data,"|MP=");
-    strcat(data,formatFloat(currentPressure,5,1));
+    strcat(data,formatFloat(currentPressure/145.0377,5,1));
     strcat(data,"|MT=");
     strcat(data,formatFloat(currentTemperature+273.15,5,1)); //in Kelvin
     strcat(data,"|OD=|");

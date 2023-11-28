@@ -27,6 +27,7 @@ Adafruit_LiquidCrystal lcd(0);
 #define CS 4     //SD CS pin
 
 #define PT A11
+#define TT A5
 
 #define SWITCH 47
 #define VENT 45

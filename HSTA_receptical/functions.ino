@@ -4,10 +4,10 @@ float fmap(float x, float a, float b, float c, float d){
 }
 
 double JcurveThermistor(int Vo){
-  float A = 1.125506488e-03;
-  float B = 2.346974828e-04;
-  float C = 0.8564408032e-07;
-  float R1 = 20880;
+  float A = 1.129241E-03;
+  float B = 2.341077E-04;
+  float C = 8.775468E-08;
+  float R1 = 10000;
   float logR2, R2, T;
   R2 = R1* (1023.0 / (float)Vo - 1.0);
   logR2 = log(R2);
@@ -15,6 +15,7 @@ double JcurveThermistor(int Vo){
   T =  T - 273.15;
   return T;
 }
+
 
 void sendMessage(char* msg){
   Wire.beginTransmission(0x03);
@@ -26,7 +27,7 @@ void daughterPrint(unsigned long inter){
   if (!daughterTimer) { daughterTimer = millis(); }
   if (millis() - daughterTimer > inter && daughterTimer) {
     daughterTimer = millis();
-    bigMatrix[0].writeInt(currentPressure*145.03773773);  // Write local pressure values to 7-seg screen
+    bigMatrix[0].writeInt(currentPressure);  // Write local pressure values to 7-seg screen
     smallMatrix[0].squareDisplay(digitalRead(VENT)?100:0);
     bigMatrix[1].writeInt(currentTemperature);
     smallMatrix[1].squareDisplay(digitalRead(SWITCH)?100:0);
